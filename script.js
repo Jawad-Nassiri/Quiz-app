@@ -35,75 +35,62 @@ const questions = [
             { text: "George Orwell", correct: false }
         ]
     }
-    
 ];
-
 
 const questionElement = document.getElementById('question');
 const answerButtons = document.getElementById('answer-button');
 const nextBtn = document.getElementById('next-btn');
 
-
-
 let currentQuestionIndex = 0;
 let score = 0;
 
-function startQuiz(){
-    let currentQuestionIndex = 0;
-    let score = 0;
+function startQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
     nextBtn.innerHTML = 'Next';
     showQuestion();
 }
 
-
-
-
-
-
-
-function showQuestion(){
+function showQuestion() {
     resetState();
     let currentQuestion = questions[currentQuestionIndex];
-    let questionNo = currentQuestionIndex +1;
+    let questionNo = currentQuestionIndex + 1;
     questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
 
-
-    currentQuestion.answers.forEach(function(answer){
+    currentQuestion.answers.forEach(function(answer) {
         const button = document.createElement('button');
         button.innerHTML = answer.text;
         button.classList.add('btn');
         answerButtons.appendChild(button);
 
-        if(answer.correct == true){
+        if (answer.correct == true) {
             button.dataset.correct = answer.correct;
         }
         button.addEventListener('click', selectAnswer);
     });
 }
 
-
-function resetState(){
+function resetState() {
     nextBtn.style.display = 'none';
 
-    while(answerButtons.firstChild){
+    while (answerButtons.firstChild) {
         answerButtons.removeChild(answerButtons.firstChild);
     }
 }
 
-
-function selectAnswer(e){
+function selectAnswer(e) {
     const selectedBtn = e.target;
     const isCorrect = selectedBtn.dataset.correct === "true";
 
-    if(isCorrect){
+    if (isCorrect) {
         selectedBtn.classList.add("correct");
         score++;
-    }else{
+    } else {
         selectedBtn.classList.add('incorrect');
     }
 
     Array.from(answerButtons.children).forEach(button => {
-        if(button.dataset.correct === "true"){
+        if (button.dataset.correct === "true") {
             button.classList.add("correct");
         }
 
@@ -113,24 +100,31 @@ function selectAnswer(e){
     nextBtn.style.display = "block";
 }
 
-function handelNextBtn(){
+function showScore() {
+    resetState();
+    questionElement.innerHTML = `You scored ${score} out of ${questions.length}`;
+    nextBtn.innerHTML = "Restart";
+    nextBtn.style.display = 'block';
+}
+
+function handleNextBtn() {
     currentQuestionIndex++;
 
-    if(currentQuestionIndex < questions.length){
+    if (currentQuestionIndex < questions.length) {
         showQuestion();
-    }else{
+    } else {
         showScore();
     }
 }
 
-
-nextBtn.addEventListener("click", ()=>{
-    if(currentQuestionIndex < questions.length){
-        handelNextBtn();
-    }else{
-        startQuiz();
+nextBtn.addEventListener("click", () => {
+    if (currentQuestionIndex < questions.length) {
+        handleNextBtn();
+    } else {
+        currentQuestionIndex = 0;
+        score = 0; 
+        startQuiz(); 
     }
-})
-
+});
 
 startQuiz();
